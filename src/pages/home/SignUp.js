@@ -20,7 +20,6 @@ export default function SignUp() {
     email: email,
     password: password,
     name: username,
-    repeat_password: repeatPassword,
   };
   function errorAlert(error) {
     if (error.status === 409) {
