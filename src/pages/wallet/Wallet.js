@@ -3,16 +3,45 @@ import {
   AiOutlinePlusCircle as PlusCircle,
   AiOutlineMinusCircle as MinusCircle,
 } from "react-icons/ai";
-import styled from "styled-components";
+import {
+  StyledWallet,
+  StyledContainer,
+  StyledBalance,
+  StyledMove,
+  StyledNav,
+  StyledTransactions,
+} from "./style";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import * as requests from "../../services/requests";
+import dayjs from "dayjs";
 
 export default function Wallet() {
+  const [walletMovements, setWalletMovements] = useState([]);
   const navigate = useNavigate();
 
   const { token, user } = JSON.parse(localStorage.getItem("session"));
   if (!token) navigate("/");
-
+  useEffect(() => {
+    requests
+      .getWallet(token)
+      .then((res) => {
+        console.log(res.data);
+        setWalletMovements(res.data);
+      })
+      .catch(() =>
+        alert(
+          "Houve uma falha ao obter os registros, por favor atualize a página"
+        )
+      );
+  }, [token]);
+  let totalMoney = 0;
+  if (walletMovements.length)
+    totalMoney = walletMovements.reduce(
+      (acc, curr) => acc + Number(curr.value),
+      0
+    );
   return (
     <StyledContainer>
       <header>
@@ -23,8 +52,34 @@ export default function Wallet() {
           <RiLogoutBoxRLine />
         </button>
       </header>
-      <StyledWallet isEmpty={true}>
-        <h2>Não há registros de entrada ou saída</h2>
+      <StyledWallet isEmpty={!walletMovements.length}>
+        {walletMovements.length ? (
+          <>
+            <StyledTransactions>
+              {walletMovements.map(({ date, description, value }, index) => {
+                const isPositive = value >= 0;
+                if (!isPositive) value = -value;
+                return (
+                  <StyledMove key={index} isPositive={isPositive}>
+                    <div>
+                      <time date={date}>{dayjs(date).format("DD/MM")}</time>
+                      <p>{description}</p>
+                    </div>
+                    <h3>{value}</h3>
+                  </StyledMove>
+                );
+              })}
+            </StyledTransactions>
+            <StyledBalance isPositive={totalMoney >= 0}>
+              <h3>SALDO</h3>
+              <h3 className="money">
+                {totalMoney >= 0 ? totalMoney : -totalMoney}
+              </h3>
+            </StyledBalance>
+          </>
+        ) : (
+          <h2>Não há registros de entrada ou saída</h2>
+        )}
       </StyledWallet>
       <StyledNav>
         <Link to="/entrada">
@@ -43,71 +98,3 @@ export default function Wallet() {
     </StyledContainer>
   );
 }
-
-const StyledContainer = styled.main`
-  width: 85%;
-  max-width: 326px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  margin: 0 auto;
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: "Raleway", sans-serif;
-    font-style: normal;
-    font-size: 26px;
-    color: #ffffff;
-    button {
-      border: none;
-      color: inherit;
-      background-color: inherit;
-      font-size: inherit;
-      cursor: pointer;
-    }
-  }
-`;
-const StyledWallet = styled.ul`
-  width: 100%;
-  height: 446px;
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 23px 12px;
-  display: flex;
-  ${(props) =>
-    props.isEmpty
-      ? `
-    align-items: center;
-    justify-content: center;`
-      : `flex-direction: column;
-    justify-content: space-between;`}
-
-  h2 {
-    font-family: "Raleway", sans-serif;
-    font-size: 20px;
-    text-align: center;
-    color: #868686;
-    width: 180px;
-  }
-`;
-const StyledNav = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  a,
-  button {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    font-family: "Raleway", sans-serif;
-    font-weight: bold;
-    font-size: 20px;
-    color: #fff;
-    width: 48%;
-    height: 114px;
-    background: #a328d6;
-    border-radius: 5px;
-    border: none;
-  }
-`;

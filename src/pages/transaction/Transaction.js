@@ -18,11 +18,12 @@ export default function Transaction({ type }) {
 
   function requestTransaction(e) {
     e.preventDefault();
-    const valueToSend = Number(value.replace(",", "."));
+    let valueToSend = Number(value.replace(",", "."));
     if (isNaN(valueToSend)) {
       setIsLoading(false);
       return alert("O valor deve ser um número decimal");
     }
+    if (type !== "entry") valueToSend *= -1;
     const body = {
       value: valueToSend,
       description: description,
@@ -37,9 +38,8 @@ export default function Transaction({ type }) {
         if (err.response.status === 401) {
           alert("Houve um erro na autenticação, faça o login novamente");
           navigate("/");
-          return
+          return;
         }
-        console.log("o erro é", err.response.status);
         alert("Houve um erro ao adicionar registro");
         setIsLoading(false);
       });
