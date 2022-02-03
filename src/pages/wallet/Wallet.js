@@ -67,19 +67,22 @@ export default function Wallet() {
         {walletMovements.length ? (
           <>
             <StyledTransactions>
-              {walletMovements.map(({ date, description, value }, index) => {
-                const isPositive = value >= 0;
-                if (!isPositive) value = -value;
-                return (
-                  <StyledMove key={index} isPositive={isPositive}>
-                    <div>
-                      <time date={date}>{dayjs(date).format("DD/MM")}</time>
-                      <p>{description}</p>
-                    </div>
-                    <h3>{value}</h3>
-                  </StyledMove>
-                );
-              })}
+              {walletMovements
+                .slice(0)
+                .reverse()
+                .map(({ date, description, value }, index) => {
+                  const isPositive = value >= 0;
+                  if (!isPositive) value = -value;
+                  return (
+                    <StyledMove key={index} isPositive={isPositive}>
+                      <div>
+                        <time date={date}>{dayjs(date).format("DD/MM")}</time>
+                        <p>{description}</p>
+                      </div>
+                      <h3>{value}</h3>
+                    </StyledMove>
+                  );
+                })}
             </StyledTransactions>
             <StyledBalance isPositive={totalMoney >= 0}>
               <h3>SALDO</h3>
