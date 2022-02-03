@@ -27,7 +27,6 @@ export default function Wallet() {
     requests
       .getWallet(token)
       .then((res) => {
-        console.log(res.data);
         setWalletMovements(res.data);
       })
       .catch(() =>
@@ -42,13 +41,25 @@ export default function Wallet() {
       (acc, curr) => acc + Number(curr.value),
       0
     );
+  function requestLogOut() {
+    console.log(token);
+    requests
+      .logout(token)
+      .then(() => {
+        localStorage.removeItem("session");
+        navigate("/");
+      })
+      .catch(() =>
+        alert("Houve uma falha ao fazer log-out, por favor atualize a página")
+      );
+  }
   return (
     <StyledContainer>
       <header>
         <h1>
           <strong>Olá, {user}</strong>
         </h1>
-        <button>
+        <button onClick={requestLogOut}>
           <RiLogoutBoxRLine />
         </button>
       </header>

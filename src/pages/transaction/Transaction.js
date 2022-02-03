@@ -25,13 +25,12 @@ export default function Transaction({ type }) {
     }
     if (type !== "entry") valueToSend *= -1;
     const body = {
-      value: valueToSend,
+      value: valueToSend.toFixed(2),
       description: description,
     };
     requests
       .postTransaction({ body, token })
       .then(() => {
-        alert("Valor registrado com sucesso!");
         navigate("/carteira");
       })
       .catch((err) => {
