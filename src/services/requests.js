@@ -16,3 +16,8 @@ export const postTransaction = ({ body, token }) =>
   axiosBase.post("/wallet", body, createBearerAuthorization(token));
 export const getWallet = (token) =>
   axiosBase.get("/wallet", createBearerAuthorization(token));
+export const deleteTransaction = ({ token, transactionId }) =>
+  axiosBase.delete(
+    "/wallet/" + transactionId,
+    createBearerAuthorization(token)
+  );

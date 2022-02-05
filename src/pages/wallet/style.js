@@ -32,10 +32,6 @@ export const StyledWallet = styled.ul`
   border-radius: 5px;
   padding: 23px 12px;
   display: flex;
-  div:first-child {
-    overflow: scroll;
-    height: 90%;
-  }
   ${(props) =>
     props.isEmpty
       ? `
@@ -53,8 +49,11 @@ export const StyledWallet = styled.ul`
   }
 `;
 export const StyledTransactions = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   row-gap: 8px;
+  overflow-y: auto;
+  height: 90%;
 `;
 export const StyledBalance = styled.div`
   display: flex;
@@ -102,9 +101,23 @@ export const StyledMove = styled.li`
       font-family: "Raleway", sans-serif;
       font-size: 16px;
       color: #000000;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 152px;
     }
   }
   h3 {
+    width: 72px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     ${(props) => (props.isPositive ? "color:green;" : "color:red;")}
+  }
+  button {
+    font-family: "Raleway", sans-serif;
+    font-size: 16px;
+    color: #c6c6c6;
+    margin-right: 8px;
+    border: none;
+    background:none;
   }
 `;

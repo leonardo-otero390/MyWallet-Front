@@ -7,16 +7,13 @@ import {
   StyledWallet,
   StyledContainer,
   StyledBalance,
-  StyledMove,
   StyledNav,
-  StyledTransactions,
 } from "./style";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as requests from "../../services/requests";
-import dayjs from "dayjs";
-
+import TransactionDisplay from "./TransactionDisplay";
 export default function Wallet() {
   const [walletMovements, setWalletMovements] = useState([]);
   const navigate = useNavigate();
@@ -42,7 +39,6 @@ export default function Wallet() {
       0
     );
   function requestLogOut() {
-    console.log(token);
     requests
       .logout(token)
       .then(() => {
@@ -66,24 +62,11 @@ export default function Wallet() {
       <StyledWallet isEmpty={!walletMovements.length}>
         {walletMovements.length ? (
           <>
-            <StyledTransactions>
-              {walletMovements
-                .slice(0)
-                .reverse()
-                .map(({ date, description, value }, index) => {
-                  const isPositive = value >= 0;
-                  if (!isPositive) value = -value;
-                  return (
-                    <StyledMove key={index} isPositive={isPositive}>
-                      <div>
-                        <time date={date}>{dayjs(date).format("DD/MM")}</time>
-                        <p>{description}</p>
-                      </div>
-                      <h3>{value}</h3>
-                    </StyledMove>
-                  );
-                })}
-            </StyledTransactions>
+            <TransactionDisplay
+              walletMovements={walletMovements}
+              token={token}
+              navigate={navigate}
+            />
             <StyledBalance isPositive={totalMoney >= 0}>
               <h3>SALDO</h3>
               <h3 className="money">
