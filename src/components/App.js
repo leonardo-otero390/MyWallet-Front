@@ -12,8 +12,9 @@ function App() {
         <Route exact path="/" element={<LogIn />} />
         <Route exact path="/cadastro" element={<SignUp />} />
         <Route exact path="/carteira" element={<Wallet />} />
-        <Route exact path="/entrada" element={<Transaction type="entry" />} />
-        <Route exact path="/saida" element={<Transaction type="exit" />} />
+        <Route exact path="/entrada" element={<Transaction pageType="entry" />} />
+        <Route exact path="/saida" element={<Transaction pageType="exit" />} />
+        <Route exact path="/editar/:transactionType/:transactionId" element={<Transaction pageType="edit" />} />
       </Routes>
     </Router>
   );

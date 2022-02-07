@@ -8,11 +8,11 @@ export default function TransactionDisplay({
   navigate,
 }) {
   function requestDelete(transactionId) {
-      console.log(transactionId);
-      requests
+    console.log(transactionId);
+    requests
       .deleteTransaction({ token, transactionId })
       .then(() => {
-          navigate(0)
+        navigate(0);
       })
       .catch(() =>
         alert("Houve uma falha ao deletar, por favor atualize a página")
@@ -25,12 +25,22 @@ export default function TransactionDisplay({
         .reverse()
         .map(({ date, description, value, _id: transactionId }, index) => {
           const isPositive = value >= 0;
-          if (!isPositive) value = -value;
+          let type = "entrada";
+          if (!isPositive) {
+            value *= -1;
+            type = "saida";
+          }
           return (
             <StyledMove key={index} isPositive={isPositive}>
               <div>
                 <time date={date}>{dayjs(date).format("DD/MM")}</time>
-                <p>{description}</p>
+                <p
+                  onClick={() =>
+                    navigate("/editar/" + type + "/" + transactionId)
+                  }
+                >
+                  {description}
+                </p>
               </div>
               <h3>{value}</h3>
               <button onClick={() => requestDelete(transactionId)}>X</button>
