@@ -78,7 +78,7 @@ npm start
 5. If you want to run with backend development mode
 
 ```bash
-npm run start dev
+npm run dev
 ```
 
 6. You can optionally build the project running
